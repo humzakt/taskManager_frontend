@@ -2,7 +2,10 @@
   <div class="task-manager-container has-background-white">
     <!-- side bar code-->
     <div class="sidebar">
-      <h1 class="title has-text-primary">Lists</h1>
+      <h1 class="title has-text-primary position-fixed">Lists</h1>
+      <button class="button is-primary has-text-white" routerLink="/new-list">
+        + New List
+      </button>
 
       <div class="list-menu">
         <a
@@ -14,19 +17,26 @@
           <p>{{ list.title }}</p>
         </a>
       </div>
-
-      <button class="button is-primary has-text-white" routerLink="/new-list">
-        + New List
-      </button>
     </div>
 
     <!--main tasks code-->
     <div class="task-list-container has-background-light">
       <h1 class="title has-text-primary">Tasks</h1>
 
-      <div class="task" *ngFor="let task of tasks">
-        <p>{{ task.title }}</p>
+      <!--Task Element-->
+      <div *ngFor="let task of tasks" (click)="onTaskClick(task)">
+        <p class="task" [ngClass]="{ completed: task.completed }">
+          {{ task.title }}
+        </p>
       </div>
+
+      <!--Add Task button-->
+      <button
+        class="circle-add-button button is-primary"
+        routerLink="./new-task"
+      >
+        <img src="../../../assets/plus-icon.svg" alt="Plus Icon" />
+      </button>
     </div>
   </div>
 </div>

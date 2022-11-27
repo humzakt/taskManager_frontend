@@ -13,9 +13,11 @@
   flex-direction: column;
 
   width: 250px;
+  height: 100%;
   background: white;
 
   padding: 42px;
+  overflow: auto;
 
   border-top-left-radius: 8px;
   border-bottom-left-radius: 8px;
@@ -96,7 +98,7 @@
     }
   }
 
-  &.completed .task-text {
+  &.completed {
     text-decoration: line-through;
     opacity: 0.8;
   }

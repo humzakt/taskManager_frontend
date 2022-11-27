@@ -1,3 +1,5 @@
+import { List } from 'src/app/models/list.model';
+import { Task } from 'src/app/models/task.model';
 import { TaskService } from './../../task.service';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
@@ -13,8 +15,8 @@ export class TaskViewComponent implements OnInit {
     private route: ActivatedRoute
   ) {}
 
-  lists: any = [];
-  tasks: any = [];
+  lists: List[] = [];
+  tasks: Task[] = [];
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
       console.log(params);
@@ -28,6 +30,14 @@ export class TaskViewComponent implements OnInit {
           this.tasks = tasks;
         });
       }
+    });
+  }
+
+  onTaskClick(task: Task) {
+    //mark
+    this.taskService.complete(task).subscribe(() => {
+      console.log('completed');
+      task.completed = !task.completed;
     });
   }
 }

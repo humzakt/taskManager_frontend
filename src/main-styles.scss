@@ -32,7 +32,13 @@ html,
 body {
   height: 100%;
 }
-
+.position-fixed {
+  position: relative;
+}
+.position-bottom-left {
+  bottom: 0;
+  left: 0;
+}
 .centered-content {
   display: flex;
   justify-content: center;
