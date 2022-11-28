@@ -16,6 +16,7 @@ export class TaskViewComponent implements OnInit {
   ) {}
 
   lists: List[] = [];
+  listSelected: boolean = false;
   tasks: Task[] = [];
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
@@ -25,6 +26,7 @@ export class TaskViewComponent implements OnInit {
         this.lists = lists;
       });
       if (params['listId']) {
+        this.listSelected = true;
         this.taskService.getTasks(params['listId']).subscribe((tasks: any) => {
           console.log(tasks);
           this.tasks = tasks;
