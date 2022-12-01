@@ -5,7 +5,7 @@ import {
   HttpHandler,
   HttpErrorResponse,
 } from '@angular/common/http';
-import { Observable, throwError, empty, Subject } from 'rxjs';
+import { Observable, throwError, empty, Subject, EMPTY } from 'rxjs';
 import { AuthService } from './auth.service';
 import { catchError, tap, switchMap } from 'rxjs/operators';
 
@@ -25,54 +25,61 @@ export class WebReqInterceptor implements HttpInterceptor {
 
     // call next() and handle the response
     return next.handle(request).pipe(
-      catchError((error) => {
-        console.log(error);
+      catchError((error: HttpErrorResponse) => {
+        // console.log('error aa gya');
+        // console.log('error status: ' + error.status);
 
         // if (error.status === 401) {
-        //   // 401 error so we are unauthorized
-
-        //   // refresh the access token
-        //   return this.refreshAccessToken().pipe(
-        //     switchMap(() => {
-        //       request = this.addAuthHeader(request);
-        //       return next.handle(request);
-        //     }),
-        //     catchError((err: any) => {
-        //       console.log(err);
-        //       this.authService.logout();
-        //       return empty();f
-        //     })
-        //   );
+        //   console.log('Error 401 : Unauthorized');
+        //   this.authService.logout();
         // }
+
+        if (error.status === 401) {
+          // 401 error so we are unauthorized
+
+          // refresh the access token
+          return this.refreshAccessToken().pipe(
+            switchMap(() => {
+              request = this.addAuthHeader(request);
+              return next.handle(request);
+            }),
+            catchError((err: any) => {
+              console.log('Error 401 : Unauthorized');
+              console.log(err);
+              this.authService.logout();
+              return EMPTY;
+            })
+          );
+        }
 
         return throwError(error);
       })
     );
   }
 
-  // refreshAccessToken() {
-  //   if (this.refreshingAccessToken) {
-  //     return new Observable((observer) => {
-  //       this.accessTokenRefreshed.subscribe(() => {
-  //         // this code will run when the access token has been refreshed
-  //         observer.next();
-  //         observer.complete();
-  //       });
-  //     });
-  //   } else {
-  //     this.refreshingAccessToken = true;
-  //     // we want to call a method in the auth service to send a request to refresh the access token
-  //     return this.authService.getNewAccessToken().pipe(
-  //       tap(() => {
-  //         console.log('Access Token Refreshed!');
-  //         this.refreshingAccessToken = false;
-  //         this.accessTokenRefreshed.next();
-  //       })
-  //     );
-  //   }
-  // }
+  refreshAccessToken() {
+    if (this.refreshingAccessToken) {
+      return new Observable((observer) => {
+        this.accessTokenRefreshed.subscribe(() => {
+          // this code will run when the access token has been refreshed
+          observer.next();
+          observer.complete();
+        });
+      });
+    } else {
+      this.refreshingAccessToken = true;
+      // we want to call a method in the auth service to send a request to refresh the access token
+      return this.authService.getNewAccessToken().pipe(
+        tap(() => {
+          console.log('Access Token Refreshed!');
+          this.refreshingAccessToken = false;
+          this.accessTokenRefreshed.next;
+        })
+      );
+    }
+  }
 
-  addAuthHeader(request: HttpRequest<any>) {
+  addAuthHeader(request: HttpRequest<any>): HttpRequest<any> {
     // get the access token
     const token = this.authService.getAccessToken();
 
