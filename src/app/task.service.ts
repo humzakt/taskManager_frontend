@@ -10,10 +10,8 @@ export class TaskService {
     // We want to send a web request to update a list
     return this.webRequestService.patch(`lists/${listId}`, { title });
   }
-  deleteTask(selectedListId: string, taskId: string) {
-    return this.webRequestService.delete(
-      `lists/${selectedListId}/tasks/${taskId}`
-    );
+  deleteTask(userId: string, taskId: string) {
+    return this.webRequestService.delete(`users/${userId}/tasks/${taskId}`);
   }
   deleteList(selectedListId: string) {
     console.log('selected list: ', selectedListId);
@@ -29,26 +27,30 @@ export class TaskService {
     return this.webRequestService.post('lists', { title });
   }
 
-  getTasks(listId: string) {
-    return this.webRequestService.get(`lists/${listId}/tasks`);
+  getTasks(userId: string) {
+    return this.webRequestService.get(`users/${userId}/tasks`);
   }
 
-  createTask(title: String, listId: string) {
+  createTask(title: String, userId: string) {
     // We want to send a web request to create a list
-    return this.webRequestService.post(`lists/${listId}/tasks`, { title });
+    return this.webRequestService.post(`users/${userId}/tasks`, { title });
   }
-  updateTask(listId: string, taskId: string, title: string) {
+  updateTask(userId: string, taskId: string, title: string) {
     // We want to send a web request to update a list
-    return this.webRequestService.patch(`lists/${listId}/tasks/${taskId}`, {
+    return this.webRequestService.patch(`users/${userId}/tasks/${taskId}`, {
       title,
     });
   }
   complete(task: Task) {
     return this.webRequestService.patch(
-      `lists/${task._listId}/tasks/${task._id}`,
+      `users/${task._userId}/tasks/${task._id}`,
       {
         completed: !task.completed,
       }
     );
+  }
+
+  getUsers() {
+    return this.webRequestService.get('users/sub-users');
   }
 }

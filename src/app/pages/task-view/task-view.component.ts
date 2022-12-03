@@ -1,10 +1,12 @@
 import { AuthService } from 'src/app/auth.service';
 import { List } from 'src/app/models/list.model';
 import { Task } from 'src/app/models/task.model';
+
 import { TaskService } from './../../task.service';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { WebRequestService } from 'src/app/web-request.service';
+import { User } from 'src/app/models/user.model';
 
 @Component({
   selector: 'app-task-view',
@@ -21,20 +23,32 @@ export class TaskViewComponent implements OnInit {
   ) {}
   selectedListId: string = '';
 
+  isOwner: boolean = false;
+  users: User[] = [];
   lists: List[] = [];
-  listSelected: boolean = false;
+  userSelected: boolean = false;
   tasks: Task[] = [];
   ngOnInit(): void {
+    this.isOwner = localStorage.getItem('isOwner') === 'true';
+    // console.log('is Owner: ', this.isOwner);
+
+    if (!this.isOwner) {
+      let userId = localStorage.getItem('userId');
+      if (userId) this.router.navigate(['/lists', userId]);
+    }
     this.route.params.subscribe((params) => {
       console.log(params);
 
-      this.taskService.getLists().subscribe((lists: any) => {
-        this.lists = lists;
+      this.taskService.getUsers().subscribe((users: any) => {
+        this.users = users;
+
+        console.log('users: ', this.users);
       });
-      if (params['listId']) {
-        this.listSelected = true;
-        this.selectedListId = params['listId'];
-        this.taskService.getTasks(params['listId']).subscribe((tasks: any) => {
+
+      if (params['userId']) {
+        this.userSelected = true;
+        this.selectedListId = params['userId'];
+        this.taskService.getTasks(params['userId']).subscribe((tasks: any) => {
           console.log(tasks);
           this.tasks = tasks;
         });
@@ -52,10 +66,10 @@ export class TaskViewComponent implements OnInit {
   }
   onDeleteListClick() {
     this.taskService.deleteList(this.selectedListId).subscribe((res: any) => {
-      this.listSelected = false;
+      this.userSelected = false;
       this.tasks = [];
       this.router.navigate(['/lists']);
-      this.listSelected = false;
+      this.userSelected = false;
       this.selectedListId = '';
     });
   }

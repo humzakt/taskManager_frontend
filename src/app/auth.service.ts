@@ -1,6 +1,6 @@
 import { WebRequestService } from './web-request.service';
 import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { shareReplay, tap } from 'rxjs/operators';
 
@@ -8,6 +8,8 @@ import { shareReplay, tap } from 'rxjs/operators';
   providedIn: 'root',
 })
 export class AuthService {
+  // console.log(res);
+
   constructor(
     private http: HttpClient,
     private router: Router,
@@ -22,8 +24,11 @@ export class AuthService {
         // console.log(res);
         this.setSession(
           res.body._id,
+
           res.headers.get('x-access-token'),
-          res.headers.get('x-refresh-token')
+          res.headers.get('x-refresh-token'),
+          res.body.isOwner,
+          res
         );
 
         console.log('Logged In');
@@ -41,7 +46,9 @@ export class AuthService {
         this.setSession(
           res.body._id,
           res.headers.get('x-access-token'),
-          res.headers.get('x-refresh-token')
+          res.headers.get('x-refresh-token'),
+          false,
+          res
         );
 
         console.log('Logged In');
@@ -50,6 +57,23 @@ export class AuthService {
     );
   }
 
+  createUser(email: string, password: string) {
+    return this.webService.createUser(email, password).pipe(
+      shareReplay()
+      // tap((res: any) => {
+      //   //the auth token will be in the header under the x-access-token key
+      //   console.log(res);
+      //   this.setSession(
+      //     res.body._id,
+      //     res.headers.get('x-access-token'),
+      //     res.headers.get('x-refresh-token')
+      //   );
+
+      //   console.log('Logged In');
+      //   console.log(res);
+      // })
+    );
+  }
   logout() {
     this.removeSession();
     this.router.navigate(['/login']);
@@ -58,21 +82,31 @@ export class AuthService {
   private setSession(
     userId: string,
     accessToken: string,
-    referenceToken: string
+    referenceToken: string,
+    isOwner: boolean,
+    res: HttpResponse<any>
   ) {
     // console.log(userId);
     // console.log(referenceToken);
     // console.log(accessToken);
 
     localStorage.setItem('userId', userId);
+    localStorage.setItem('isOwner', isOwner.toString());
+    // if (!isOwner) {
+    //   let ownerId: string = res.body._ownerId;
+    //   localStorage.setItem('ownerId', ownerId);
+    // }
     localStorage.setItem('x-access-token', accessToken);
     localStorage.setItem('x-refresh-token', referenceToken);
   }
 
   private removeSession() {
-    localStorage.removeItem('userId');
-    localStorage.removeItem('x-access-token');
-    localStorage.removeItem('x-refresh-token');
+    localStorage.clear();
+    // localStorage.removeItem('userId');
+    // localStorage.removeItem('isOwner');
+
+    // localStorage.removeItem('x-access-token');
+    // localStorage.removeItem('x-refresh-token');
   }
 
   getAccessToken() {

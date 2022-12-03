@@ -1,32 +1,35 @@
 <div class="centered-content">
   <div class="task-manager-container">
-    <div class="sidebar has-background-white">
-      <h1 class="title has-text-primary">Lists</h1>
+    <div class="sidebar has-background-white" *ngIf="this.isOwner">
+      <h1 class="title has-text-primary">Users</h1>
 
       <div class="list-menu">
-        <h3 class="empty-state-text" *ngIf="this.lists.length === 0">
-          There are no Lists here! Click the create button to create a new list.
+        <h3 class="empty-state-text" *ngIf="this.users.length === 0">
+          There are no Users here! Click the create button to create a new user.
         </h3>
         <a
           class="list-menu-item"
-          *ngFor="let list of lists"
-          [routerLink]="['/lists', list._id]"
+          *ngFor="let user of users"
+          [routerLink]="['/lists', user._id]"
           routerLinkActive="is-active"
         >
-          <p>{{ list.title }}</p>
+          <p>{{ user.email }}</p>
         </a>
       </div>
 
-      <button class="button is-primary has-text-white" routerLink="/new-list">
-        + New List
+      <button
+        class="button is-primary has-text-white"
+        routerLink="/create-sub-user"
+      >
+        + New User
       </button>
     </div>
 
     <div class="task-list-container has-background-light">
       <div *ngIf="tasks">
         <div class="top-bar">
-          <h1 class="title has-text-primary">Tasks</h1>
-          <div class="dropdown is-hoverable is-right">
+          <h1 class="title has-text-primary">Tasks for the day</h1>
+          <!-- <div class="dropdown is-hoverable is-right">
             <div class="dropdown-trigger">
               <button
                 class="button"
@@ -38,12 +41,13 @@
                 </span>
               </button>
             </div>
+
             <div class="dropdown-menu" id="dropdown-menu4" role="menu">
               <div class="dropdown-content">
                 <a
                   [routerLink]="['/edit-list', selectedListId]"
                   class="dropdown-item"
-                  *ngIf="this.listSelected"
+                  *ngIf="this.userSelected"
                 >
                   <i class="fas fa-edit has-text-danger"></i>
                   Edit List
@@ -51,23 +55,27 @@
                 <a
                   (click)="onDeleteListClick()"
                   class="dropdown-item has-text-danger"
-                  *ngIf="this.listSelected"
+                  *ngIf="this.userSelected"
                 >
                   <i class="fas fa-trash has-text-danger"></i>
                   Delete List
                 </a>
-                <a (click)="logout()" class="dropdown-item has-text-danger">
-                  <!-- <div class="icon"> -->
-                  <i class="fas fa-sign-out-alt has-text-danger"></i>
-                  <!-- </div> -->
-                  Logout
-                </a>
-                <!-- <button class="button" (click)="logout()">
 
-                </button> -->
+                <button class="button" (click)="logout()">
+
+                </button>
               </div>
             </div>
-          </div>
+
+
+          </div> -->
+
+          <a (click)="logout()" class="button is-right has-text-danger">
+            <!-- <div class="icon"> -->
+            <i class="fas fa-sign-out-alt has-text-danger"></i>
+            <!-- </div> -->
+            Logout
+          </a>
         </div>
 
         <!-- Task Elements -->
@@ -94,6 +102,7 @@
               class="button is-danger"
               (click)="onDeleteTaskClick(task)"
               style="margin-left: 10px"
+              *ngIf="this.isOwner"
             >
               <div class="icon">
                 <i class="fas fa-trash"></i>
@@ -101,7 +110,7 @@
             </button>
           </div>
         </div>
-        <div *ngIf="tasks.length === 0 && this.listSelected">
+        <div *ngIf="tasks.length === 0 && this.userSelected">
           <h3 class="empty-state-text">
             There are no tasks here! Click the add button to create a new task.
           </h3>
@@ -109,13 +118,13 @@
         <button
           routerLink="./new-task"
           class="circle-add-button button is-primary"
-          *ngIf="this.listSelected"
+          *ngIf="this.userSelected"
         >
           <img src="../../../assets/plus-icon.svg" class="has-text-white" />
         </button>
       </div>
 
-      <div *ngIf="!this.listSelected">
+      <div *ngIf="!this.userSelected">
         <h3 class="empty-state-text">Please select a list from the sidebar</h3>
       </div>
     </div>

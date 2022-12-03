@@ -45,4 +45,15 @@ export class WebRequestService {
       { observe: 'response' }
     );
   }
+
+  createUser(email: string, password: string) {
+    return this.http.post(
+      `${this.ROOT_URL}/users/create-sub-user`,
+      {
+        email,
+        password,
+      },
+      { observe: 'response' }
+    );
+  }
 }
