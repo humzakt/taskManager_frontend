@@ -105,14 +105,14 @@
           <h3 class="empty-state-text">
             There are no tasks here! Click the add button to create a new task.
           </h3>
-
-          <button
-            routerLink="./new-task"
-            class="circle-add-button button is-primary"
-          >
-            <img src="../../../assets/plus-icon.svg" class="has-text-white" />
-          </button>
         </div>
+        <button
+          routerLink="./new-task"
+          class="circle-add-button button is-primary"
+          *ngIf="this.listSelected"
+        >
+          <img src="../../../assets/plus-icon.svg" class="has-text-white" />
+        </button>
       </div>
 
       <div *ngIf="!this.listSelected">
