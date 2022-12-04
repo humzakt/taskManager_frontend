@@ -22,13 +22,19 @@ export class NewTaskComponent implements OnInit {
     });
   }
 
+  error: Boolean = false;
   createTask(title: string) {
-    this.taskService
-      .createTask(title, this.listId)
-      .subscribe((response: any) => {
-        console.log(response);
+    this.error = false;
+    if (title.length > 0) {
+      this.taskService
+        .createTask(title, this.listId)
+        .subscribe((response: any) => {
+          console.log(response);
 
-        this.router.navigate([`../`], { relativeTo: this.route });
-      });
+          this.router.navigate([`../`], { relativeTo: this.route });
+        });
+    } else {
+      this.error = true;
+    }
   }
 }

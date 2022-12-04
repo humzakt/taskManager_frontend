@@ -47,7 +47,7 @@ export class AuthService {
           res.body._id,
           res.headers.get('x-access-token'),
           res.headers.get('x-refresh-token'),
-          false,
+          true,
           res
         );
 

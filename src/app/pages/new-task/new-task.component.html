@@ -1,6 +1,13 @@
 <div class="centered-content">
   <div class="modal-box">
     <h1 class="title">Create a new task</h1>
+    <article class="message is-danger is-small" *ngIf="this.error">
+      <p class="message-header">Invalid Title</p>
+
+      <div class="message-body">
+        <p>- Kindly add a title</p>
+      </div>
+    </article>
 
     <input
       #taskTitleInput

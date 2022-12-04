@@ -25,10 +25,14 @@ export class EditTaskComponent implements OnInit {
   }
 
   updateTask(title: string) {
-    this.taskService
-      .updateTask(this.userId, this.taskId, title)
-      .subscribe(() => {
-        this.router.navigate(['/lists', this.userId]);
-      });
+    if (title.length > 0) {
+      this.taskService
+        .updateTask(this.userId, this.taskId, title)
+        .subscribe(() => {
+          this.router.navigate(['/lists', this.userId]);
+        });
+    } else {
+      this.router.navigate(['/lists', this.userId]);
+    }
   }
 }

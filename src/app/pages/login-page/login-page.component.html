@@ -1,6 +1,21 @@
 <div class="centered-content">
   <div class="white-box">
     <h1 class="title has-text-primary">Login</h1>
+    <article class="message is-danger is-small" *ngIf="this.error">
+      <p class="message-header">Invalid Email or password</p>
+
+      <div class="message-body">
+        <p *ngIf="!this.emailValid">- Invalid Email</p>
+
+        <p *ngIf="!this.passwordValid">
+          - Password must be greater than 5 characters
+        </p>
+
+        <p *ngIf="this.passwordValid && this.emailValid">
+          - Failed to authenticate with server
+        </p>
+      </div>
+    </article>
 
     <div class="field">
       <p class="control has-icons-left has-icons-right">
